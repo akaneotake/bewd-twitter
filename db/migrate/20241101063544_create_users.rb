@@ -1,10 +1,13 @@
 class CreateUsers < ActiveRecord::Migration[6.1]
-  def change
+  def change    
     create_table :users do |t|
-      t.string :username, null: false, index: { unique: true }
-      t.string :email, null: false, index: { unique: true }
-      t.string :password, null: false
+      t.string :username, null: false
+      t.string :email, null: false
+      t.string :password_digest, null: false  # Use password_digest instead of password
       t.timestamps
     end
+
+    add_index :users, :email, unique: true
+    add_index :users, :username, unique: true
   end
 end

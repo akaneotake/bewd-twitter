@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
+
+  
   describe '.create' do
     it 'should have many sessions' do
       user = FactoryBot.create(:user)
@@ -11,6 +13,18 @@ RSpec.describe User, type: :model do
       user = FactoryBot.create(:user)
       expect(user.tweets).to eq([])
     end
+
+# use these of previous to one if can
+    # it 'should have many sessions' do
+    #   association = User.reflect_on_association(:sessions)
+    #   expect(association.macro).to eq(:has_many)
+    # end
+    
+    # it 'should have many tweets' do
+    #   association = User.reflect_on_association(:tweets)
+    #   expect(association.macro).to eq(:has_many)
+    # end
+    
 
     it 'must have the presence of email' do
       expect {
@@ -82,4 +96,6 @@ RSpec.describe User, type: :model do
       }.to raise_error(ActiveRecord::RecordInvalid)
     end
   end
+
+  
 end

@@ -13,7 +13,7 @@ class Session < ApplicationRecord
   
     # Generate a unique token for the session
     def generate_session_token
-      self.token ||= SecureRandom.hex(20)  # Generates a random 40-character token
+      self.token ||= SecureRandom.hex(20) if token.blank? # Generates a random 40-character token
     end
   end
   
