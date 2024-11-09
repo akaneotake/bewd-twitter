@@ -6,14 +6,11 @@ class Session < ApplicationRecord
     validates :user_id, presence: true
     validates :token, presence: true, uniqueness: true
   
-    # Callbacks
-    before_validation :generate_session_token, on: :create
-  
-    private
-  
-    # Generate a unique token for the session
+    before_validation :generate_session_token
+
     def generate_session_token
-      self.token ||= SecureRandom.hex(20) if token.blank? # Generates a random 40-character token
+      self.token ||= SecureRandom.hex(16)  # Generates a 32-character hexadecimal string
     end
+    
   end
   
