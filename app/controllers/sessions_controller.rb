@@ -21,8 +21,8 @@ class SessionsController < ApplicationController
   end
 
   def authenticated
-    session_token = cookies.permanent.signed[:session_token]  # Cookie からトークンを取得
-    session= Session.find_by(token: session_token) # データベースで検索
+    session_token = cookies.permanent.signed[:twitter_session_token]  # Cookieからトークンを取得
+    session = Session.find_by(token: session_token) # データベースで検索
 
     if session
       user = session.user
@@ -34,6 +34,22 @@ class SessionsController < ApplicationController
       render json: {
         authenticated: false
       }
+    end
+  end
+
+  def destroy
+    session_token = cookies.permanent.signed[:twitter_session_token]  # Cookie からトークンを取得
+    session = Session.find_by(token: session_token) # セッションを検索
+
+    if session and session.destroy  # セッションを削除（ログアウト）
+      cookies.delete(:session_token)  # Cookieも削除
+      render json: {
+        success: true 
+      }, status: :ok
+    else
+      render json: {
+        success: false  
+      }, status: :unauthorized
     end
   end
 end
