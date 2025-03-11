@@ -1,4 +1,5 @@
-class ApplicationController < ActionController::API
+class ApplicationController < ActionController::Base
+  protect_from_forgery with: :exception
   before_action :authenticate_user # 各アクションの前に実行
 
   def authenticate_user
@@ -10,7 +11,7 @@ class ApplicationController < ActionController::API
     else
       render json: { 
         success: false
-      }
+      }, status: :unauthorized
     end
   end
 end

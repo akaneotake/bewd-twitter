@@ -1,4 +1,5 @@
 class SessionsController < ApplicationController
+  before_action :authenticate_user, only: [:authenticated]
   skip_before_action :authenticate_user, only: [:create] # createアクションは認証不要
   
   def create
@@ -35,7 +36,7 @@ class SessionsController < ApplicationController
     else
       render json: {
         authenticated: false
-      }
+      }, status: :unauthorized
     end
   end
 
