@@ -1,47 +1,30 @@
 class TweetsController < ApplicationController
   def create
-    token = cookies.signed[:session_token]
-    session = Session.find_by(token: token)
+    @tweet = @current_user.tweets.new(tweet_params)
 
-    if session
-      user = session.user
-      @tweet = user.tweets.new(tweet_params)
-
-      if @tweet.save
-        render 'tweets/create'
-      else
-        render json: { success: false }
-      end
-    else
-      render json: { success: false }
-  end
-end
-
-def destroy
-  token = cookies.signed[:session_token]
-    session = Session.find_by(token: token) 
-
-    if session
-      user = session.user 
-      @tweet = user.tweets.find_by(id: params[:id]) 
-
-      if @tweet
-        @tweet.destroy
-
-        render json: {
-          success: true
-        }
-      else
-        render json: {
-          success: false
-        }
-      end
-
+    if @tweet.save
+      render 'tweets/create'
     else
       render json: {
         success: false
       }
     end
+end
+
+def destroy
+  @tweet = @current_user.tweets.find_by(id: params[:id]) 
+
+  if @tweet
+    @tweet.destroy
+
+    render json: {
+      success: true
+    }
+  else
+    render json: {
+      success: false
+    }
+  end
 end
 
 private

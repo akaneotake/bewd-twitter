@@ -1,4 +1,6 @@
 class SessionsController < ApplicationController
+  skip_before_action :authenticate_user, only: [:create] # createアクションは認証不要
+  
   def create
     @user = User.find_by(username: params[:user][:username])
 
