@@ -5,7 +5,7 @@ class SessionsController < ApplicationController
     @user = User.find_by(username: params[:user][:username])
 
     if @user && @user.password == params[:user][:password]
-      session = @user.session.create
+      session = @user.sessions.create
 
       cookies.permanent.signed[:session_token] = {
         value: session.token,
