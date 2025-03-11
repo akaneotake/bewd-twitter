@@ -1,11 +1,20 @@
 class TweetsController < ApplicationController
-  skip_before_action :authenticate_user, only: [:index, :index_by_user] # 認証不要
-
   def create
-    @tweet = @current_user.tweets.new(tweet_params)
+    token = cookies.signed[:session_token]
+    session = Session.find_by(token: token)
 
-    if @tweet.save
-      render 'tweets/create'
+    if session 
+      user = session.user
+      @tweet = user.tweets.new(tweet_params)
+
+      if @tweet.save
+        render 'tweets/create'
+      else
+        render json: {
+          success: false
+        }
+      end
+    
     else
       render json: {
         success: false
@@ -14,24 +23,24 @@ class TweetsController < ApplicationController
   end
 
   def destroy
-    @tweet = @current_user.tweets.find_by(id: params[:id]) 
+    token = cookies.signed[:session_token]
+    session = Session.find_by(token: token)
 
-    if @tweet
-      @tweet.destroy
+    if session 
+      user = session.user
+      @tweet = user.tweets.find_by(id: params[:id]) 
 
-      render json: {
-        success: true
-      }
-    else
-      render json: {
-        success: false
-      }
+      if @tweet&.destroy
+        render json: { success: true }
+      else
+        render json: { success: false }
+      end
     end
   end
 
   def index
     @tweets = Tweet.includes(:user).order(created_at: :desc) # すべてのツイートを取得（ユーザー情報を含む）
-    render :index # Jbuilder を使用
+    render 'tweets/index'
   end
 
   # 指定したユーザーのツイート一覧を取得
@@ -40,9 +49,10 @@ class TweetsController < ApplicationController
 
     if user
       @tweets = user.tweets.order(created_at: :desc) # ユーザーのツイートを取得（最新順）
-      render :index_by_user # Jbuilder を使用
+      render 'tweets/index_by_user' # Jbuilder を使用
     else
       render json: {
+        tweets: [],
         success: false
       }
     end

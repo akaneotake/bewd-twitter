@@ -1,7 +1,4 @@
 class SessionsController < ApplicationController
-  before_action :authenticate_user, only: [:authenticated]
-  skip_before_action :authenticate_user, only: [:create] # createアクションは認証不要
-  
   def create
     @user = User.find_by(username: params[:user][:username])
 
@@ -9,7 +6,7 @@ class SessionsController < ApplicationController
       session = @user.sessions.create
 
       cookies.permanent.signed[:session_token] = {
-        value: session.token,
+        value: session.session_token,
         httponly: true # クライアント側のJavaScriptからアクセス不可
       }
 
