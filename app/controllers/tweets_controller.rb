@@ -1,4 +1,6 @@
 class TweetsController < ApplicationController
+  skip_before_action :authenticate_user, only: [:index] # indexアクションは認証不要
+
   def create
     @tweet = @current_user.tweets.new(tweet_params)
 
@@ -25,6 +27,11 @@ def destroy
       success: false
     }
   end
+end
+
+def index
+  @tweets = Tweet.includes(:user).order(created_at: :desc) # すべてのツイートを取得（ユーザー情報を含む）
+  render :index # Jbuilder を使用
 end
 
 private
