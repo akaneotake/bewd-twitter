@@ -38,7 +38,7 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    session_token = cookies.permanent.signed[:session_token]  # Cookie からトークンを取得
+    session_token = cookies.permanent.signed[:twitter_session_token]  # Cookie からトークンを取得
     session = Session.find_by(token: session_token) # セッションを検索
 
     if session
