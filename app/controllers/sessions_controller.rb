@@ -5,7 +5,7 @@ class SessionsController < ApplicationController
     if @user && @user.password == params[:user][:password]
       session = @user.sessions.create
 
-      cookies.permanent.signed[:session_token] = {
+      cookies.permanent.signed[:twitter_session_token] = {
         value: session.token,
         httponly: true # クライアント側のJavaScriptからアクセス不可
       }
@@ -21,7 +21,7 @@ class SessionsController < ApplicationController
   end
 
   def authenticated
-    session_token = cookies.permanent.signed[:session_token]  # Cookieからトークンを取得
+    session_token = cookies.permanent.signed[:twitter_session_token]  # Cookieからトークンを取得
     session = Session.find_by(token: session_token) # データベースで検索
 
     if session
@@ -41,7 +41,8 @@ class SessionsController < ApplicationController
     session_token = cookies.permanent.signed[:session_token]  # Cookie からトークンを取得
     session = Session.find_by(token: session_token) # セッションを検索
 
-    if session and session.destroy  # セッションを削除（ログアウト）
+    if session
+      session.destroy  # セッションを削除（ログアウト）
       cookies.delete(:session_token)  # Cookieも削除
       render json: {
         success: true 

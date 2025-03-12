@@ -5,7 +5,7 @@ class TweetsController < ApplicationController
 
     if session 
       user = session.user
-      @tweet = user.tweets.new(tweet_params)
+      @tweet = user.tweets.new(message: params[:tweet][:message])
 
       if @tweet.save
         render 'tweets/create'
@@ -57,10 +57,4 @@ class TweetsController < ApplicationController
       }
     end
   end
-
-  private
-
-    def tweet_params
-      params.require(:tweet).permit(:message)
-    end
 end
