@@ -1,6 +1,6 @@
 class TweetsController < ApplicationController
   def create
-    token = cookies.signed[:session_token]
+    token = cookies.signed[:twitter_session_token]
     session = Session.find_by(token: token)
 
     if session 
@@ -23,7 +23,7 @@ class TweetsController < ApplicationController
   end
 
   def destroy
-    token = cookies.signed[:session_token]
+    token = cookies.signed[:twitter_session_token]
     session = Session.find_by(token: token)
 
     if session 
