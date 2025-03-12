@@ -6,7 +6,7 @@ class SessionsController < ApplicationController
       session = @user.sessions.create
 
       cookies.permanent.signed[:session_token] = {
-        value: session.session_token,
+        value: session.token,
         httponly: true # クライアント側のJavaScriptからアクセス不可
       }
 
